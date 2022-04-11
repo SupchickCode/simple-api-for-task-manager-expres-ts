@@ -1,6 +1,6 @@
 import express from "express";
 import * as bodyParser from 'body-parser';
-import IController from './interface/controllers/controller.interface';
+import IController from './interface/controller.interface';
 import mongoose from 'mongoose';
 
 export default class App {
