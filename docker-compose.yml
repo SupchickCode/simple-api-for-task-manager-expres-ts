@@ -1,8 +1,8 @@
 version: "3.9"
 services:
-  tast_manager_ts:
+  task_manager_ts:
     build: .
-    container_name: tast_manager_ts
+    container_name: task_manager_ts
     ports:
       - "3000:3000"
     depends_on:
