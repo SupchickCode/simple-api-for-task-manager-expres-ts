@@ -1,15 +1,19 @@
 import express from "express";
 import * as bodyParser from 'body-parser';
-import IController from './interface/controller.interface';
+import IController from './interface/controllers/controller.interface';
+import mongoose from 'mongoose';
 
 export default class App {
     public app: express.Application;
     public port: number | string;
+    public mongo_url: string;
 
-    constructor(controllers: IController[], port: number | string) {
+    constructor(controllers: IController[], port: number | string, mongo_url: string) {
         this.app = express();
         this.port = port;
+        this.mongo_url = mongo_url;
 
+        this.initializeMongo()
         this.initializeMiddlewares();
         this.initializeControllers(controllers);
     }
@@ -21,6 +25,12 @@ export default class App {
     private initializeControllers(controllers: IController[]) {
         controllers.forEach((controller: IController) => {
             this.app.use('/api/', controller.router);
+        });
+    }
+
+    private initializeMongo() {
+        mongoose.connect(this.mongo_url, () => {
+            console.log(`Connected to database on url ${this.mongo_url}`);
         });
     }
 

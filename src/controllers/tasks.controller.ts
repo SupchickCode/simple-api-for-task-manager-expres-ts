@@ -1,5 +1,7 @@
 import * as express from 'express';
-import IController from '../interface/controller.interface';
+import CreateTaskDto from '../dto/create.tast.dto';
+import IController from '../interface/controllers/controller.interface';
+import { TaskModel } from '../models/tasks.model';
 
 export default class TasksController implements IController {
   public path: string = '/tasks';
@@ -18,7 +20,9 @@ export default class TasksController implements IController {
   }
 
   getAllTasks = (request: express.Request, response: express.Response) => {
-    response.send('all');
+    TaskModel.find({}, (tasks, error) => {
+      response.send({ 'tasks': tasks });
+    })
   }
 
   showTask = (request: express.Request, response: express.Response) => {
@@ -26,7 +30,13 @@ export default class TasksController implements IController {
   }
 
   createATask = (request: express.Request, response: express.Response) => {
-    response.send('create');
+    const data: CreateTaskDto = request.body;
+
+    TaskModel.create(data, (error, task) => {
+      if (task) response.send(task);
+
+      console.log(error);
+    })
   }
 
   updateATask = (request: express.Request, response: express.Response) => {
