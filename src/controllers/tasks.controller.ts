@@ -2,10 +2,12 @@ import * as express from 'express';
 import CreateTaskDto from '../dto/create.tast.dto';
 import IController from '../interface/controller.interface';
 import { TaskModel } from '../models/tasks.model';
+import TasksService from '../services/tasks.service';
 
 export default class TasksController implements IController {
   public path: string = '/tasks';
   public router = express.Router();
+  public service = new TasksService();
 
   constructor() {
     this.intializeRoutes();
@@ -21,7 +23,6 @@ export default class TasksController implements IController {
 
   getAllTasks = (request: express.Request, response: express.Response) => {
     TaskModel.find({}, (error, tasks) => {
-      if (error) console.log(error);
       response.send({ 'tasks': tasks });
     })
   }
@@ -35,8 +36,6 @@ export default class TasksController implements IController {
 
     TaskModel.create(data, (error, task) => {
       if (task) response.send(task);
-
-      console.log(error);
     })
   }
 
