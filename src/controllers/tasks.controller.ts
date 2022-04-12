@@ -1,11 +1,9 @@
 import * as express from 'express';
-import CreateTaskDto from '../dto/create.tast.dto';
 import IController from '../interface/controller.interface';
-import { TaskModel } from '../models/tasks.model';
 import TasksService from '../services/tasks.service';
 
 export default class TasksController implements IController {
-  public path: string = '/tasks';
+  public path: string = '/tasks/';
   public router = express.Router();
   public service = new TasksService();
 
@@ -17,33 +15,27 @@ export default class TasksController implements IController {
     this.router.get(this.path, this.getAllTasks);
     this.router.get(this.path + ':id', this.showTask);
     this.router.post(this.path, this.createATask);
-    this.router.patch(this.path + ':id', this.updateATask);
-    this.router.delete(this.path + ':id', this.deleteATask);
+    this.router.patch(this.path + ':id', this.updateTask);
+    this.router.delete(this.path + ':id', this.deleteTask);
   }
 
-  getAllTasks = (request: express.Request, response: express.Response) => {
-    TaskModel.find({}, (error, tasks) => {
-      response.send({ 'tasks': tasks });
-    })
+  getAllTasks = async (request: express.Request, response: express.Response) => {
+    response.send(await this.service.getAllTasks());
   }
 
-  showTask = (request: express.Request, response: express.Response) => {
-    response.send('one');
+  showTask = async (request: express.Request, response: express.Response) => {
+    response.send(await this.service.showTask(request.params.id));
   }
 
-  createATask = (request: express.Request, response: express.Response) => {
-    const data: CreateTaskDto = request.body;
-
-    TaskModel.create(data, (error, task) => {
-      if (task) response.send(task);
-    })
+  createATask = async (request: express.Request, response: express.Response) => {
+    response.send(await this.service.createTask(request.body));
   }
 
-  updateATask = (request: express.Request, response: express.Response) => {
-    response.send('update');
+  updateTask = async(request: express.Request, response: express.Response) => {
+    response.send(await this.service.updateTask(request.params.id, request.body));
   }
 
-  deleteATask = (request: express.Request, response: express.Response) => {
-    response.send('delete');
+  deleteTask = async (request: express.Request, response: express.Response) => {
+    response.send(await this.service.deleteTask(request.params.id));
   }
 }

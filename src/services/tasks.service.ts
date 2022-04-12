@@ -1,25 +1,29 @@
-import CreateTaskDto from '../dto/create.tast.dto';
+import CreateTaskDto from '../dto/create.tasks.dto';
+import UpdateTaskDto from '../dto/update.tasks.dto';
 import { TaskModel } from '../models/tasks.model';
-import log from '../utils/logger';
 
 export default class TasksService {
 
   getAllTasks = async () => {
-    return await TaskModel.find({}, (error, tasks) => {
-      return { 'tasks': tasks };
-    })
+    return await TaskModel.find({});
   }
 
-  showTask = (id: string) => {
-    return TaskModel.find({ 'id': id }, (error, task) => {
-      if (error) log.info(error);
-      return { 'task': task };
-    })
+  showTask = async (id: string) => {
+    return await TaskModel.findById(id)
+      .catch(() => 'Not found');
   }
 
   createTask = async (data: CreateTaskDto) => {
-    return await TaskModel.create(data, (error, task) => {
-       return { 'task': task };
-    })
+    return await TaskModel.create(data);
+  }
+
+  updateTask = async (id: string, data: UpdateTaskDto) => {
+    return await TaskModel.findOneAndUpdate({ _id: id }, data, {new: true})
+      .catch(() => 'Not found');
+  }
+
+  deleteTask = async (id: string) => {
+    return await TaskModel.deleteOne({ _id: id })
+      .catch(() => 'Not found');
   }
 }
