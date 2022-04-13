@@ -1,4 +1,4 @@
-import CreateTaskDto from '../dto/create.tasks.dto';
+import express from "express";
 import UpdateTaskDto from '../dto/update.tasks.dto';
 import { TaskModel } from '../models/tasks.model';
 
@@ -13,11 +13,11 @@ export default class TasksService {
       .catch(() => 'Not found');
   }
 
-  createTask = async (data: CreateTaskDto) => {
+  createTask = async (data: express.Request) => {
     return await TaskModel.create(data);
   }
 
-  updateTask = async (id: string, data: UpdateTaskDto) => {
+  updateTask = async (id: string, data: express.Request) => {
     return await TaskModel.findOneAndUpdate({ _id: id }, data, {new: true})
       .catch(() => 'Not found');
   }

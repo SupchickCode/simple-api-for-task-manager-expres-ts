@@ -1,6 +1,8 @@
 import * as express from 'express';
 import IController from '../interface/controller.interface';
 import TasksService from '../services/tasks.service';
+import validate from '../middleware/validate.request';
+import createTasksDto from '../dto/create.tasks.dto';
 
 export default class TasksController implements IController {
   public path: string = '/tasks/';
@@ -14,7 +16,7 @@ export default class TasksController implements IController {
   public intializeRoutes() {
     this.router.get(this.path, this.getAllTasks);
     this.router.get(this.path + ':id', this.showTask);
-    this.router.post(this.path, this.createATask);
+    this.router.post(this.path, validate(createTasksDto), this.createATask);
     this.router.patch(this.path + ':id', this.updateTask);
     this.router.delete(this.path + ':id', this.deleteTask);
   }
@@ -31,7 +33,7 @@ export default class TasksController implements IController {
     response.send(await this.service.createTask(request.body));
   }
 
-  updateTask = async(request: express.Request, response: express.Response) => {
+  updateTask = async (request: express.Request, response: express.Response) => {
     response.send(await this.service.updateTask(request.params.id, request.body));
   }
 
